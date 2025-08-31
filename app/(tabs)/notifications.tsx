@@ -1,21 +1,48 @@
-import { Text, View, StyleSheet } from 'react-native';
+import { useState } from "react";
+import { FlatList, StyleSheet, Text, View } from "react-native";
 
-export default function AboutScreen() {
+type Notification = {
+  id: string;
+  title: string;
+  message: string;
+};
+
+export default function NotificationsPage() {
+  const [notifications, setNotifications] = useState<Notification[]>([
+    { id: "1", title: "Welcome!", message: "Thanks for joining SunShare." },
+    { id: "2", title: "New Photo", message: "Alice shared a sunset near you." },
+    { id: "3", title: "Reminder", message: "Check out the global feed for today's sunsets." },
+  ]);
+
+  const renderItem = ({ item }: { item: Notification }) => (
+    <View style={styles.notification}>
+      <Text style={styles.title}>{item.title}</Text>
+      <Text>{item.message}</Text>
+    </View>
+  );
+
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Notifications</Text>
+      {notifications.length === 0 ? (
+        <Text style={styles.empty}>No notifications</Text>
+      ) : (
+        <FlatList
+          data={notifications}
+          keyExtractor={(item) => item.id}
+          renderItem={renderItem}
+        />
+      )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#25292e',
-    justifyContent: 'center',
-    alignItems: 'center',
+  container: { flex: 1, padding: 16, backgroundColor: "#fff" },
+  notification: {
+    padding: 12,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: "#ccc",
   },
-  text: {
-    color: '#fff',
-  },
+  title: { fontWeight: "bold", marginBottom: 4 },
+  empty: { textAlign: "center", marginTop: 50, color: "#999" },
 });
